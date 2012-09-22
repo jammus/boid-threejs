@@ -24,23 +24,24 @@ define(['jquery', 'threejs', 'boid'], function($, THREE, Boid) {
     container.append(renderer.domElement);
 
     Boid.MAX_VELOCITY = new THREE.Vector3(2, 2, 2);
-    var boid = new Boid(
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(1, .3, 1),
-        200
-    );
-    var boid_two = new Boid(
-        new THREE.Vector3(-5, -5, -5),
-        new THREE.Vector3(-1, .3, -1),
-        200,
-        10,
-        boid
-    );
+    var population = [],
+        populationSize = 30;
 
     var particles = new THREE.Geometry();
     particles.dynamic = true;
-    particles.vertices.push(boid.position());
-    particles.vertices.push(boid_two.position());
+
+    var boid, q;
+    for (var i = 0; i < populationSize; i++) {
+        q = Math.random() * 2 * Math.PI;
+        boid = new Boid(
+            new THREE.Vector3(Math.random() * Math.cos(q) * 200, Math.random() * 200 - 100, Math.random() * Math.sin(q) * 200),
+            new THREE.Vector3(0, 0, 0),
+            200,
+            population
+        );
+        population.push(boid);
+        particles.vertices.push(boid.position());
+    }
 
     var boidMaterial = new THREE.ParticleBasicMaterial({
         color: 0xFFFFAA,
@@ -56,8 +57,9 @@ define(['jquery', 'threejs', 'boid'], function($, THREE, Boid) {
     scene.add(particleSystem);
 
     function animate() {
-        boid.update();
-        boid_two.update();
+        for (var i = 0; i < populationSize; i++) {
+            population[i].update();
+        }
         particles.verticesNeedUpdate = true;
     }
 

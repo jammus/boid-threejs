@@ -76,31 +76,59 @@ define(['three', 'boid'], function(THREE, Boid) {
         });
 
         describe('One boids a distance from another', function() {
-            it('will move to within the minimum distance', function() {
-                var minDistance = 3;
+            it('will move towards it', function() {
                 var boid_one = new Boid(
                     new THREE.Vector3(3, 3, 3),
-                    new THREE.Vector3(1, 1, 1),
-                    50,
-                    3
+                    new THREE.Vector3(1, 1, 1)
                 );
                 var boid_two = new Boid(
                     new THREE.Vector3(-3, -3, -3),
                     new THREE.Vector3(0, 0, 0), 
                     50,
-                    3,
-                    boid_one
+                    [boid_one]
                 );
                 var distance;
-                for (var i = 0; i < 10000; i++) {
+                for (var i = 0; i < 100000; i++) {
                     boid_two.update();
                     distance = boid_one.position().distanceTo(boid_two.position());
-                    if (distance <= minDistance) {
+                    if (distance <= 0.2) {
                         break;
                     }
                 }
-                expect(distance).not.toBeGreaterThan(minDistance);
+                expect(distance).toBeLessThan(0.2);
             });
         });
+
+        describe('One boid aware of two others', function() {
+            it('will move to the middle point between the two boids', function() {
+                var boid_one = new Boid(
+                    new THREE.Vector3(5, 0, 0),
+                    new THREE.Vector3(0, 0, 0)
+                );
+                var boid_two = new Boid(
+                    new THREE.Vector3(-5, 0, 0),
+                    new THREE.Vector3(0, 0, 0)
+                );
+                var boid_three = new Boid(
+                    new THREE.Vector3(0, -10, -10),
+                    new THREE.Vector3(0, -1, -1),
+                    undefined,
+                    [boid_one, boid_two]
+                );
+                var midPoint = new THREE.Vector3(0, 0, 0);
+
+                var distance;
+                for (var i = 0; i < 1000; i++) {
+                    boid_three.update();
+
+                    distance = boid_three.position().distanceTo(midPoint);
+                    if (distance <= 0.002) {
+                        break;
+                    }
+                }
+                expect(distance).toBeLessThan(0.002);
+            });
+        });
+
     });
 });

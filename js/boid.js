@@ -2,10 +2,12 @@ define([], function() {
 
     var ORIGIN = new THREE.Vector3(0, 0, 0),
         MAX_VELOCITY = new THREE.Vector3(1, 1, 1),
-        TURNING_MODIFIER = new THREE.Vector3(.05, .04, .05);
+        TURNING_MODIFIER = new THREE.Vector3(1, 1, 1);
 
-    var Boid = function(position, velocity, range, minDistance, other_boid) {
+    var Boid = function(position, velocity, range, other_boids) {
         var that = this;
+
+        other_boids = other_boids || [];
 
         that.position = function() {
             return position;
@@ -16,10 +18,13 @@ define([], function() {
         };
 
         that.update = function() {
-            if (other_boid) {
-                if (position.distanceTo(other_boid.position()) > minDistance) {
-                    turnTowards(other_boid.position());
+            if (other_boids.length) {
+                var midPoint = new THREE.Vector3(0, 0, 0);
+                for (var i = 0; i < other_boids.length; i++) {
+                    midPoint.addSelf(other_boids[i].position());
                 }
+                midPoint.divideScalar(other_boids.length);
+                turnTowards(midPoint);
             }
             var distanceFromOrigin = position.length();
             if (distanceFromOrigin > range) {
