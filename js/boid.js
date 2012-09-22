@@ -4,7 +4,7 @@ define([], function() {
         MAX_VELOCITY = new THREE.Vector3(1, 1, 1),
         TURNING_MODIFIER = new THREE.Vector3(.05, .04, .05);
 
-    var Boid = function(position, velocity, maxRange) {
+    var Boid = function(position, velocity, range, minDistance, other_boid) {
         var that = this;
 
         that.position = function() {
@@ -16,8 +16,13 @@ define([], function() {
         };
 
         that.update = function() {
+            if (other_boid) {
+                if (position.distanceTo(other_boid.position()) > minDistance) {
+                    turnTowards(other_boid.position());
+                }
+            }
             var distanceFromOrigin = position.length();
-            if (distanceFromOrigin > maxRange) {
+            if (distanceFromOrigin > range) {
                 turnTowards(ORIGIN);
             }
             position.addSelf(velocity);

@@ -74,5 +74,33 @@ define(['three', 'boid'], function(THREE, Boid) {
             });
 
         });
+
+        describe('One boids a distance from another', function() {
+            it('will move to within the minimum distance', function() {
+                var minDistance = 3;
+                var boid_one = new Boid(
+                    new THREE.Vector3(3, 3, 3),
+                    new THREE.Vector3(1, 1, 1),
+                    50,
+                    3
+                );
+                var boid_two = new Boid(
+                    new THREE.Vector3(-3, -3, -3),
+                    new THREE.Vector3(0, 0, 0), 
+                    50,
+                    3,
+                    boid_one
+                );
+                var distance;
+                for (var i = 0; i < 10000; i++) {
+                    boid_two.update();
+                    distance = boid_one.position().distanceTo(boid_two.position());
+                    if (distance <= minDistance) {
+                        break;
+                    }
+                }
+                expect(distance).not.toBeGreaterThan(minDistance);
+            });
+        });
     });
 });

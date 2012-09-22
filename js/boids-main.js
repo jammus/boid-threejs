@@ -29,10 +29,18 @@ define(['jquery', 'threejs', 'boid'], function($, THREE, Boid) {
         new THREE.Vector3(1, .3, 1),
         200
     );
+    var boid_two = new Boid(
+        new THREE.Vector3(-5, -5, -5),
+        new THREE.Vector3(-1, .3, -1),
+        200,
+        10,
+        boid
+    );
 
     var particles = new THREE.Geometry();
     particles.dynamic = true;
     particles.vertices.push(boid.position());
+    particles.vertices.push(boid_two.position());
 
     var boidMaterial = new THREE.ParticleBasicMaterial({
         color: 0xFFFFAA,
@@ -49,6 +57,7 @@ define(['jquery', 'threejs', 'boid'], function($, THREE, Boid) {
 
     function animate() {
         boid.update();
+        boid_two.update();
         particles.verticesNeedUpdate = true;
     }
 
