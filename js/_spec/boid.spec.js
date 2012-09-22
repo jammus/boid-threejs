@@ -37,7 +37,7 @@ define(['three', 'boid'], function(THREE, Boid) {
             beforeEach(function() {
                 behaviour = {
                     calculate: function() {
-                        return { acceleration: new THREE.Vector3(0.3, 0.5, 0.8) };
+                        return { acceleration: new THREE.Vector3(0.003, 0.005, 0.001) };
                     }
                 };
                 population = [
@@ -59,15 +59,25 @@ define(['three', 'boid'], function(THREE, Boid) {
 
             it('will apply acceleration result to velocity', function() {
                 boid.update();
-                expect(boid.velocity()).toEqual(new THREE.Vector3(0.3, 0.5, 0.8));
+                expect(boid.velocity()).toEqual(new THREE.Vector3(0.003, 0.005, 0.001));
+            });
+
+            it('will not exceed maximum acceleration (0.05, 0.02, 0.05)', function() {
+                behaviour.calculate = function() {
+                    return { acceleration: new THREE.Vector3(1, -1, 0.3) };
+                };
+                boid.update();
+                expect(boid.velocity()).toEqual(new THREE.Vector3(0.05, -0.02, 0.05));
             });
 
             it('will not exceed maximum velocity (1, 1, 1)', function() {
                 behaviour.calculate = function() {
                     return { acceleration: new THREE.Vector3(5, -10, 0.5) };
                 };
-                boid.update();
-                expect(boid.velocity()).toEqual(new THREE.Vector3(1, -1, 0.5));
+                for (var i = 0; i < 1000; i++) {
+                    boid.update();
+                }
+                expect(boid.velocity()).toEqual(new THREE.Vector3(1, -1, 1));
             });
         });
     });

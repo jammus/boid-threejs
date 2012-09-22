@@ -1,6 +1,7 @@
 define(['three'], function(THREE) {
 
-    var MAX_VELOCITY = new THREE.Vector3(1, 1, 1);
+    var MAX_VELOCITY = new THREE.Vector3(1, 1, 1),
+        MAX_ACCELERATION = new THREE.Vector3(0.05, 0.02, 0.05);
 
     var Boid = function(position, velocity, behaviour, population) {
         var that = this;
@@ -25,14 +26,19 @@ define(['three'], function(THREE) {
             position.addSelf(velocity);
         };
 
-       function applyAcceleration(acceleration) {
+        function applyAcceleration(acceleration) {
+            max(acceleration, MAX_ACCELERATION);
             velocity.addSelf(acceleration);
-            velocity.x = Math.max(velocity.x, -MAX_VELOCITY.x);
-            velocity.y = Math.max(velocity.y, -MAX_VELOCITY.y);
-            velocity.z = Math.max(velocity.z, -MAX_VELOCITY.z);
-            velocity.x = Math.min(velocity.x, MAX_VELOCITY.x);
-            velocity.y = Math.min(velocity.y, MAX_VELOCITY.y);
-            velocity.z = Math.min(velocity.z, MAX_VELOCITY.z);
+            max(velocity, MAX_VELOCITY);
+        }
+
+        function max(v1, v2) {
+            v1.x = Math.max(v1.x, -v2.x);
+            v1.y = Math.max(v1.y, -v2.y);
+            v1.z = Math.max(v1.z, -v2.z);
+            v1.x = Math.min(v1.x, v2.x);
+            v1.y = Math.min(v1.y, v2.y);
+            v1.z = Math.min(v1.z, v2.z);
         }
     };
 
