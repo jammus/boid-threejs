@@ -25,7 +25,7 @@ define(['jquery', 'threejs', 'boid'], function($, THREE, Boid) {
 
     Boid.MAX_VELOCITY = new THREE.Vector3(2, 2, 2);
     var population = [],
-        populationSize = 30;
+        populationSize = 3;
 
     var particles = new THREE.Geometry();
     particles.dynamic = true;

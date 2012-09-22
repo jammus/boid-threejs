@@ -130,5 +130,26 @@ define(['three', 'boid'], function(THREE, Boid) {
             });
         });
 
+        describe('A boid on a collision course', function() {
+            it('will match the velocity of the other', function() {
+                var boid_one = new Boid(
+                    new THREE.Vector3(1, 0, 0),
+                    new THREE.Vector3(-1, 0, 0)
+                );
+                var boid_two = new Boid(
+                    new THREE.Vector3(-1, 0, 0),
+                    new THREE.Vector3(1, 0, 0),
+                    undefined,
+                    [boid_one]
+                );
+                var velocity;
+                for (var i = 0; i < 1000; i++) {
+                    boid_two.update();
+                }
+                console.log(boid_two.velocity());
+                expect(boid_one.velocity()).toEqual(boid_two.velocity());
+            });
+        });
+
     });
 });
