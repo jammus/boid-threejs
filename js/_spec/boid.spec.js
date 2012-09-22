@@ -29,127 +29,46 @@ define(['three', 'boid'], function(THREE, Boid) {
             });
         });
 
-        describe('A boid too far from the origin', function() {
-            var origin,
-                position,
-                velocity,
-                boid,
-                maxRange;
+        describe('A boid with behaviour on update', function() {
+            var boid,
+                behaviour,
+                population;
 
             beforeEach(function() {
-                origin = new THREE.Vector3(0, 0, 0);
-                position = new THREE.Vector3(100, 100, 100);
-                velocity = new THREE.Vector3(1, 1, 1);
-                maxRange = 50;
+                behaviour = {
+                    calculate: function() {
+                        return { acceleration: new THREE.Vector3(0.3, 0.5, 0.8) };
+                    }
+                };
+                population = [
+                    new Boid(null, null)
+                ];
                 boid = new Boid(
-                    position,
-                    velocity,
-                    maxRange
+                    new THREE.Vector3(0, 0, 0),
+                    new THREE.Vector3(0, 0, 0),
+                    behaviour,
+                    population
                 );
             });
-
-            it('will move back to within the max range', function() {
-                var distance;
-                for (var i = 0; i < 10000; i++) {
-                    boid.update();
-                    distance = boid.position().length();
-                    if (distance < maxRange) {
-                        break;
-                    }
-                }
-                expect(distance).toBeLessThan(maxRange);
+                
+            it('will pass itself and its population to the behaviour', function() {
+                spyOn(behaviour, 'calculate');
+                boid.update();
+                expect(behaviour.calculate).toHaveBeenCalledWith(boid, population);
             });
 
-            it('will not exceed maximum velocity +/-(1, 1, 1)', function() {
-                var newVelocity;
-                for (var i = 0; i < 100; i++) {
-                    boid.update();
-
-                    newVelocity = boid.velocity();
-
-                    expect(Math.abs(newVelocity.x)).not.toBeGreaterThan(1);
-                    expect(Math.abs(newVelocity.y)).not.toBeGreaterThan(1);
-                    expect(Math.abs(newVelocity.z)).not.toBeGreaterThan(1);
-                }
+            it('will apply acceleration result to velocity', function() {
+                boid.update();
+                expect(boid.velocity()).toEqual(new THREE.Vector3(0.3, 0.5, 0.8));
             });
 
-        });
-
-        describe('One boids a distance from another', function() {
-            it('will move towards it', function() {
-                var boid_one = new Boid(
-                    new THREE.Vector3(3, 3, 3),
-                    new THREE.Vector3(1, 1, 1)
-                );
-                var boid_two = new Boid(
-                    new THREE.Vector3(-3, -3, -3),
-                    new THREE.Vector3(0, 0, 0), 
-                    50,
-                    [boid_one]
-                );
-                var distance;
-                for (var i = 0; i < 100000; i++) {
-                    boid_two.update();
-                    distance = boid_one.position().distanceTo(boid_two.position());
-                    if (distance <= 0.2) {
-                        break;
-                    }
-                }
-                expect(distance).toBeLessThan(0.2);
+            it('will not exceed maximum velocity (1, 1, 1)', function() {
+                behaviour.calculate = function() {
+                    return { acceleration: new THREE.Vector3(5, -10, 0.5) };
+                };
+                boid.update();
+                expect(boid.velocity()).toEqual(new THREE.Vector3(1, -1, 0.5));
             });
         });
-
-        describe('One boid aware of two others', function() {
-            it('will move to the middle point between the two boids', function() {
-                var boid_one = new Boid(
-                    new THREE.Vector3(5, 0, 0),
-                    new THREE.Vector3(0, 0, 0)
-                );
-                var boid_two = new Boid(
-                    new THREE.Vector3(-5, 0, 0),
-                    new THREE.Vector3(0, 0, 0)
-                );
-                var boid_three = new Boid(
-                    new THREE.Vector3(0, -10, -10),
-                    new THREE.Vector3(0, -1, -1),
-                    undefined,
-                    [boid_one, boid_two]
-                );
-                var midPoint = new THREE.Vector3(0, 0, 0);
-
-                var distance;
-                for (var i = 0; i < 1000; i++) {
-                    boid_three.update();
-
-                    distance = boid_three.position().distanceTo(midPoint);
-                    if (distance <= 0.002) {
-                        break;
-                    }
-                }
-                expect(distance).toBeLessThan(0.002);
-            });
-        });
-
-        describe('A boid on a collision course', function() {
-            it('will match the velocity of the other', function() {
-                var boid_one = new Boid(
-                    new THREE.Vector3(1, 0, 0),
-                    new THREE.Vector3(-1, 0, 0)
-                );
-                var boid_two = new Boid(
-                    new THREE.Vector3(-1, 0, 0),
-                    new THREE.Vector3(1, 0, 0),
-                    undefined,
-                    [boid_one]
-                );
-                var velocity;
-                for (var i = 0; i < 1000; i++) {
-                    boid_two.update();
-                }
-                console.log(boid_two.velocity());
-                expect(boid_one.velocity()).toEqual(boid_two.velocity());
-            });
-        });
-
     });
 });

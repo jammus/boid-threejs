@@ -1,4 +1,4 @@
-define(['jquery', 'threejs', 'boid'], function($, THREE, Boid) {
+define(['jquery', 'three', 'boid', 'behaviours/originrange'], function($, THREE, Boid, OriginRangeBehaviour) {
     var WIDTH = window.innerWidth,
         HEIGHT = window.innerHeight;
 
@@ -25,18 +25,23 @@ define(['jquery', 'threejs', 'boid'], function($, THREE, Boid) {
 
     Boid.MAX_VELOCITY = new THREE.Vector3(2, 2, 2);
     var population = [],
-        populationSize = 3;
+        populationSize = 150;
 
     var particles = new THREE.Geometry();
     particles.dynamic = true;
 
+    var behaviour = new OriginRangeBehaviour(200, new THREE.Vector3(0.15, 0.04, 0.15));
     var boid, q;
     for (var i = 0; i < populationSize; i++) {
         q = Math.random() * 2 * Math.PI;
         boid = new Boid(
             new THREE.Vector3(Math.random() * Math.cos(q) * 200, Math.random() * 200 - 100, Math.random() * Math.sin(q) * 200),
-            new THREE.Vector3(0, 0, 0),
-            200,
+            new THREE.Vector3(
+                Math.random(),
+                Math.random(),
+                Math.random()
+            ),
+            behaviour,
             population
         );
         population.push(boid);

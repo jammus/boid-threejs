@@ -3,7 +3,7 @@ requirejs.config({
     urlArgs: 'bust=' + (new Date).getTime(),
     paths: {
         jquery: '../lib/jquery/jquery-require',
-        threejs: '../lib/three/three-require',
+        three: '../lib/three/three-require',
         text: '../lib/require/text'
     }
 });

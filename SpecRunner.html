@@ -26,7 +26,10 @@
             ];
 
             var specs = [
-                '_spec/boid.spec'
+                '_spec/boid.spec',
+                'behaviours/_spec/centering.spec',
+                'behaviours/_spec/originrange.spec',
+                'behaviours/_spec/alignment.spec'
             ];
 
             requirejs(dependencies.concat(specs), function() {
