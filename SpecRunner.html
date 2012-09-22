@@ -14,16 +14,22 @@
             requirejs.config({
                 baseUrl: 'js/',
                 paths: {
-                    jquery: 'lib/jquery/jquery-require',
-                    threejs: 'lib/three/three-require',
-                    text: 'lib/require/text'
+                    jquery: '../lib/jquery/jquery-require',
+                    three: '../lib/three/three-require',
+                    text: '../lib/require/text'
                 }
             });
 
-            var specs = [
+            var dependencies = [
+                "lib/jquery/jquery.min.js",
+                "lib/three/three.min.js"
             ];
 
-            requirejs(specs, function() {
+            var specs = [
+                '_spec/boid.spec'
+            ];
+
+            requirejs(dependencies.concat(specs), function() {
                 (function() {
 
                     var jasmineEnv = jasmine.getEnv();
