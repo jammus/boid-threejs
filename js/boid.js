@@ -18,6 +18,7 @@ define(['three'], function(THREE) {
 
         that.update = function() {
             if (behaviour) {
+                var targetPopulation = [ ];
                 var result = behaviour.calculate(that, population);
                 if (result && result.acceleration) {
                     applyAcceleration(result.acceleration);

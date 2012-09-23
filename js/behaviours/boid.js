@@ -1,15 +1,17 @@
-define(['three', 'behaviours/weighted', 'behaviours/originrange', 'behaviours/alignment', 'behaviours/centering'], function(THREE, WeightedBehaviour, OriginRangeBehaviour, AlignmentBehaviour, CenteringBehaviour) {
+define(['three', 'behaviours/weighted', 'behaviours/originrange', 'behaviours/alignment', 'behaviours/centering', 'behaviours/separation'], function(THREE, WeightedBehaviour, OriginRangeBehaviour, AlignmentBehaviour, CenteringBehaviour, SeparationBehaviour) {
 
     var behaviour = new WeightedBehaviour(
         [
             new OriginRangeBehaviour(200),
             new AlignmentBehaviour(),
-            new CenteringBehaviour()
+            new CenteringBehaviour(),
+            new SeparationBehaviour(120)
         ],
         [
-            .9,
-            .6,
-            .05
+            16,
+            .5,
+            .5,
+            15
         ]
     );
 

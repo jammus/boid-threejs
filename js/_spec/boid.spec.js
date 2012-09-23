@@ -41,7 +41,12 @@ define(['three', 'boid'], function(THREE, Boid) {
                     }
                 };
                 population = [
-                    new Boid(null, null)
+                    new Boid(null, new THREE.Vector3(0, 0.5, 0.1)),
+                    new Boid(null, new THREE.Vector3(10, 5, 0)),
+                    new Boid(null, new THREE.Vector3(-1, -0.5, 1)),
+                    new Boid(null, new THREE.Vector3(3, 0, 1)),
+                    new Boid(null, new THREE.Vector3(7, 9, 4.2)),
+                    new Boid(null, new THREE.Vector3(-4, 5, -2.1))
                 ];
                 boid = new Boid(
                     new THREE.Vector3(0, 0, 0),
@@ -51,7 +56,7 @@ define(['three', 'boid'], function(THREE, Boid) {
                 );
             });
                 
-            it('will pass itself and its population to the behaviour', function() {
+            it('will pass itself and the population to the behaviour', function() {
                 spyOn(behaviour, 'calculate');
                 boid.update();
                 expect(behaviour.calculate).toHaveBeenCalledWith(boid, population);
