@@ -1,5 +1,6 @@
-define(['jquery', 'three', 'boid', 'behaviours/boid'], function($, THREE, Boid, boidBehaviour) {
-    Boid.prototype.MAX_VELOCTIY = new THREE.Vector3(1.5, 2, 1.5);
+define(['jquery', 'three', 'boid', 'behaviours/boid', 'population'], function($, THREE, Boid, boidBehaviour, Population) {
+    Boid.prototype.MAX_VELOCTIY = new THREE.Vector3(2.5, 3, 2.5);
+    Boid.prototype.MAX_ACCELERATION = new THREE.Vector3(0.07, 0.05, 0.07);
 
     var WIDTH = window.innerWidth,
         HEIGHT = window.innerHeight;
@@ -20,13 +21,14 @@ define(['jquery', 'three', 'boid', 'behaviours/boid'], function($, THREE, Boid, 
 
     var scene = new THREE.Scene();
 
-    camera.position.z = 500;
+    camera.position.z = 1500;
     scene.add(camera);
 
     container.append(renderer.domElement);
 
-    var population = [],
-        populationSize = 150;
+    var boids = [],
+        population = new Population(boids),
+        populationSize = 100;
 
     var particles = new THREE.Geometry();
     particles.dynamic = true;
@@ -37,14 +39,14 @@ define(['jquery', 'three', 'boid', 'behaviours/boid'], function($, THREE, Boid, 
         boid = new Boid(
             new THREE.Vector3(Math.random() * Math.cos(q) * 200, Math.random() * 200 - 100, Math.random() * Math.sin(q) * 200),
             new THREE.Vector3(
-                Math.random(),
-                -Math.random(),
-                Math.random()
+                Math.random() + 1,
+                -Math.random() - 1,
+                Math.random() + 1
             ),
             boidBehaviour,
             population
         );
-        population.push(boid);
+        boids.push(boid);
         particles.vertices.push(boid.position());
     }
 
@@ -63,7 +65,7 @@ define(['jquery', 'three', 'boid', 'behaviours/boid'], function($, THREE, Boid, 
 
     function animate() {
         for (var i = 0; i < populationSize; i++) {
-            population[i].update();
+            boids[i].update();
         }
         particles.verticesNeedUpdate = true;
     }

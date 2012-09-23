@@ -1,4 +1,4 @@
-define(['three', 'boid'], function(THREE, Boid) {
+define(['three', 'boid', 'population'], function(THREE, Boid, Population) {
     describe('Boids', function() {
         describe('A new boid', function() {
             var boid,
@@ -31,9 +31,11 @@ define(['three', 'boid'], function(THREE, Boid) {
 
         describe('A boid with behaviour on update', function() {
             var boid,
+                boids,
                 behaviour,
                 population,
-                originalSettings;
+                originalSettings,
+                origin;
 
             beforeEach(function() {
                 behaviour = {
@@ -45,14 +47,16 @@ define(['three', 'boid'], function(THREE, Boid) {
                     acceleration: Boid.prototype.MAX_ACCELERATION.clone(),
                     velocity: Boid.prototype.MAX_VELOCITY.clone()
                 };
-                population = [
-                    new Boid(null, new THREE.Vector3(0, 0.5, 0.1)),
-                    new Boid(null, new THREE.Vector3(10, 5, 0)),
-                    new Boid(null, new THREE.Vector3(-1, -0.5, 1)),
-                    new Boid(null, new THREE.Vector3(3, 0, 1)),
-                    new Boid(null, new THREE.Vector3(7, 9, 4.2)),
-                    new Boid(null, new THREE.Vector3(-4, 5, -2.1))
+                origin = new THREE.Vector3(0, 0, 0);
+                boids = [
+                    new Boid(origin, new THREE.Vector3(0, 0.5, 0.1)),
+                    new Boid(origin, new THREE.Vector3(10, 5, 0)),
+                    new Boid(origin, new THREE.Vector3(-1, -0.5, 1)),
+                    new Boid(origin, new THREE.Vector3(3, 0, 1)),
+                    new Boid(origin, new THREE.Vector3(7, 9, 4.2)),
+                    new Boid(origin, new THREE.Vector3(-4, 5, -2.1))
                 ];
+                population = new Population(boids);
                 boid = new Boid(
                     new THREE.Vector3(0, 0, 0),
                     new THREE.Vector3(0, 0, 0),
@@ -66,10 +70,21 @@ define(['three', 'boid'], function(THREE, Boid) {
                 Boid.prototype.MAX_ACCELERATION = originalSettings.acceleration;
             });
                 
-            it('will pass itself and the population to the behaviour', function() {
+            it('will pass itself and the five closest boids to the behaviour', function() {
+                var nearestBoids = [
+                    boids[0],
+                    boids[1],
+                    boids[2],
+                    boids[3],
+                    boids[4]
+                ];
                 spyOn(behaviour, 'calculate');
+                spyOn(population, 'getNearestNeighbours').andCallFake(function(position, limit) {
+                    return nearestBoids;
+                });
                 boid.update();
-                expect(behaviour.calculate).toHaveBeenCalledWith(boid, population);
+                expect(population.getNearestNeighbours).toHaveBeenCalledWith(boid.position(), 5);
+                expect(behaviour.calculate).toHaveBeenCalledWith(boid, nearestBoids);
             });
 
             it('will apply acceleration result to velocity', function() {

@@ -16,17 +16,20 @@
                 paths: {
                     jquery: '../lib/jquery/jquery-require',
                     three: '../lib/three/three-require',
-                    text: '../lib/require/text'
+                    text: '../lib/require/text',
+                    underscore: '../lib/underscore/underscore-require'
                 }
             });
 
             var dependencies = [
                 "lib/jquery/jquery.min.js",
-                "lib/three/three.min.js"
+                "lib/three/three.min.js",
+                "lib/underscore/underscore-min.js"
             ];
 
             var specs = [
                 '_spec/boid.spec',
+                '_spec/population.spec',
                 'behaviours/_spec/centering.spec',
                 'behaviours/_spec/originrange.spec',
                 'behaviours/_spec/alignment.spec',

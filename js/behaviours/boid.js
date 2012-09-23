@@ -2,15 +2,15 @@ define(['three', 'behaviours/weighted', 'behaviours/originrange', 'behaviours/al
 
     var behaviour = new WeightedBehaviour(
         [
-            new OriginRangeBehaviour(200),
+            new OriginRangeBehaviour(350),
             new AlignmentBehaviour(),
             new CenteringBehaviour(),
-            new SeparationBehaviour(30)
+            new SeparationBehaviour(20)
         ],
         [
+            40,
+            20.5,
             9,
-            .8,
-            .6,
             2
         ]
     );

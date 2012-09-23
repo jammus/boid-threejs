@@ -15,8 +15,8 @@ define(['three'], function(THREE) {
 
         that.update = function() {
             if (behaviour) {
-                var targetPopulation = [ ];
-                var result = behaviour.calculate(that, population);
+                var targetPopulation = population.getNearestNeighbours(position, 5);
+                var result = behaviour.calculate(that, targetPopulation);
                 if (result && result.acceleration) {
                     accelerate(result.acceleration);
                 }
