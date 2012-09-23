@@ -39,7 +39,7 @@ define(['three', 'boid', 'behaviours/separation'], function(THREE, Boid, Separat
                 expect(result.acceleration).toEqual(
                    new THREE.Vector3(-.5, -.5, -.5)
                             .normalize()
-                            .divideScalar(boid.position().distanceTo(other_boid.position()))
+                            .multiplyScalar(boid.position().distanceTo(other_boid.position()))
                 );
             });
         });
@@ -60,9 +60,9 @@ define(['three', 'boid', 'behaviours/separation'], function(THREE, Boid, Separat
                 var result = behaviour.calculate(boid, other_boids);
                 expect(result.acceleration).toEqual(
                     new THREE.Vector3(
-                        -0.21845254924135338,
-                        -0.01790594665912733,
-                        -0.3247573273018566
+                        -0.8333333333333334,
+                        -0.033333333333333326,
+                        -0.16666666666666666
                     )
                 );
             });

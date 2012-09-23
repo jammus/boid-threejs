@@ -5,13 +5,13 @@ define(['three', 'behaviours/weighted', 'behaviours/originrange', 'behaviours/al
             new OriginRangeBehaviour(200),
             new AlignmentBehaviour(),
             new CenteringBehaviour(),
-            new SeparationBehaviour(120)
+            new SeparationBehaviour(30)
         ],
         [
-            16,
-            .5,
-            .5,
-            15
+            9,
+            .8,
+            .6,
+            2
         ]
     );
 

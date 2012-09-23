@@ -17,7 +17,7 @@ define(['three'], function(THREE) {
                 var velocity = boid.position().clone();
                 velocity.subSelf(population[i].position());
                 velocity.normalize();
-                velocity.divideScalar(distance);
+                velocity.multiplyScalar(distance);
                 acceleration.addSelf(velocity);
             }
             acceleration.divideScalar(population.length);

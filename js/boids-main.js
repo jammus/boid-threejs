@@ -1,4 +1,6 @@
 define(['jquery', 'three', 'boid', 'behaviours/boid'], function($, THREE, Boid, boidBehaviour) {
+    Boid.prototype.MAX_VELOCTIY = new THREE.Vector3(1.5, 2, 1.5);
+
     var WIDTH = window.innerWidth,
         HEIGHT = window.innerHeight;
 
@@ -36,7 +38,7 @@ define(['jquery', 'three', 'boid', 'behaviours/boid'], function($, THREE, Boid, 
             new THREE.Vector3(Math.random() * Math.cos(q) * 200, Math.random() * 200 - 100, Math.random() * Math.sin(q) * 200),
             new THREE.Vector3(
                 Math.random(),
-                Math.random(),
+                -Math.random(),
                 Math.random()
             ),
             boidBehaviour,
