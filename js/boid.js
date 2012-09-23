@@ -1,8 +1,5 @@
 define(['three'], function(THREE) {
 
-    var MAX_VELOCITY = new THREE.Vector3(1, 1, 1),
-        MAX_ACCELERATION = new THREE.Vector3(0.05, 0.02, 0.05);
-
     var Boid = function(position, velocity, behaviour, population) {
         var that = this;
 
@@ -21,16 +18,20 @@ define(['three'], function(THREE) {
                 var targetPopulation = [ ];
                 var result = behaviour.calculate(that, population);
                 if (result && result.acceleration) {
-                    applyAcceleration(result.acceleration);
+                    accelerate(result.acceleration);
                 }
             }
-            position.addSelf(velocity);
+            move();
         };
 
-        function applyAcceleration(acceleration) {
-            max(acceleration, MAX_ACCELERATION);
+        function move() {
+            max(velocity, that.MAX_VELOCITY);
+            position.addSelf(velocity);
+        }
+
+        function accelerate(acceleration) {
+            max(acceleration, that.MAX_ACCELERATION);
             velocity.addSelf(acceleration);
-            max(velocity, MAX_VELOCITY);
         }
 
         function max(v1, v2) {
@@ -42,6 +43,10 @@ define(['three'], function(THREE) {
             v1.z = Math.min(v1.z, v2.z);
         }
     };
+
+
+    Boid.prototype.MAX_VELOCITY = new THREE.Vector3(1, 1, 1);
+    Boid.prototype.MAX_ACCELERATION = new THREE.Vector3(0.05, 0.02, 0.05);
 
 
     return Boid;

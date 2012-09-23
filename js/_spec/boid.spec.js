@@ -32,13 +32,18 @@ define(['three', 'boid'], function(THREE, Boid) {
         describe('A boid with behaviour on update', function() {
             var boid,
                 behaviour,
-                population;
+                population,
+                originalSettings;
 
             beforeEach(function() {
                 behaviour = {
                     calculate: function() {
                         return { acceleration: new THREE.Vector3(0.003, 0.005, 0.001) };
                     }
+                };
+                originalSettings = {
+                    acceleration: Boid.prototype.MAX_ACCELERATION.clone(),
+                    velocity: Boid.prototype.MAX_VELOCITY.clone()
                 };
                 population = [
                     new Boid(null, new THREE.Vector3(0, 0.5, 0.1)),
@@ -54,6 +59,11 @@ define(['three', 'boid'], function(THREE, Boid) {
                     behaviour,
                     population
                 );
+            });
+
+            afterEach(function() {
+                Boid.prototype.MAX_VELOCITY = originalSettings.velocity;
+                Boid.prototype.MAX_ACCELERATION = originalSettings.acceleration;
             });
                 
             it('will pass itself and the population to the behaviour', function() {
@@ -75,6 +85,15 @@ define(['three', 'boid'], function(THREE, Boid) {
                 expect(boid.velocity()).toEqual(new THREE.Vector3(0.05, -0.02, 0.05));
             });
 
+            it('can have maximum acceleration configure', function() {
+                behaviour.calculate = function() {
+                    return { acceleration: new THREE.Vector3(1, -1, 0.3) };
+                };
+                Boid.prototype.MAX_ACCELERATION = new THREE.Vector3(0.5, 0.9, 0.4);
+                boid.update();
+                expect(boid.velocity()).toEqual(new THREE.Vector3(0.5, -0.9, 0.3));
+            });
+
             it('will not exceed maximum velocity (1, 1, 1)', function() {
                 behaviour.calculate = function() {
                     return { acceleration: new THREE.Vector3(5, -10, 0.5) };
@@ -83,6 +102,17 @@ define(['three', 'boid'], function(THREE, Boid) {
                     boid.update();
                 }
                 expect(boid.velocity()).toEqual(new THREE.Vector3(1, -1, 1));
+            });
+
+            it('can have maximum velocity configured', function() {
+                behaviour.calculate = function() {
+                    return { acceleration: new THREE.Vector3(5, -10, 0.5) };
+                };
+                Boid.prototype.MAX_VELOCITY = new THREE.Vector3(3, 3, 3);
+                for (var i = 0; i < 1000; i++) {
+                    boid.update();
+                }
+                expect(boid.velocity()).toEqual(new THREE.Vector3(3, -3, 3));
             });
         });
     });
